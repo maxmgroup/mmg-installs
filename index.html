@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MMG In-House Rep Installs — YTD 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root { color-scheme: light; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+.header .subtitle {
+  font-size: 14px;
+  color: #6c757d;
+}
+.kpi-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.kpi-card {
+  flex: 1;
+  min-width: 140px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.kpi-card .value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+.kpi-card .label {
+  font-size: 11px;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-top: 6px;
+}
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.card h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 18px;
+}
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 480px;
+}
+.chart-container-monthly {
+  position: relative;
+  width: 100%;
+  height: 340px;
+}
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.tab-btn {
+  padding: 7px 16px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background: #fff;
+  color: #495057;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.tab-btn:hover { background: #f8f9fa; }
+.tab-btn.active {
+  background: #1a1a2e;
+  color: #fff;
+  border-color: #1a1a2e;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 2px solid #dee2e6;
+  color: #6c757d;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+tr:hover td { background: #f8f9fa; }
+.rank { color: #6c757d; font-weight: 600; }
+.rep-name { font-weight: 600; }
+.installs-val { font-weight: 700; color: #1a1a2e; }
+.bar-cell { width: 40%; }
+.bar-bg {
+  height: 22px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #4361ee, #3a86ff);
+  transition: width 0.6s ease;
+}
+.partner-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.partner-tag {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: #e9ecef;
+  color: #495057;
+  white-space: nowrap;
+}
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: #adb5bd;
+  margin-top: 20px;
+  padding: 12px 0;
+}
+@media (max-width: 700px) {
+  body { padding: 14px; }
+  .kpi-card { min-width: 100px; padding: 14px; }
+  .kpi-card .value { font-size: 24px; }
+  .chart-container { height: 400px; }
+  .bar-cell { display: none; }
+  th, td { padding: 8px 6px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>MMG In-House Rep Installs</h1>
+  <div class="subtitle">Year-to-Date 2026 (Jan – Jun)</div>
+</div>
+
+<div class="kpi-row" id="kpis"></div>
+
+<div class="card">
+  <h2>Installs by Rep</h2>
+  <div class="chart-container">
+    <canvas id="repChart"></canvas>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Monthly Install Trend</h2>
+  <div class="chart-container-monthly">
+    <canvas id="monthlyChart"></canvas>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Rep Leaderboard</h2>
+  <div class="tabs">
+    <button class="tab-btn active" data-view="overview">Overview</button>
+    <button class="tab-btn" data-view="monthly">Monthly Breakdown</button>
+    <button class="tab-btn" data-view="partners">By ISP Partner</button>
+  </div>
+  <div id="tableContainer"></div>
+</div>
+
+<div class="footer">MMG Group &middot; Data as of July 1, 2026</div>
+
+<script>
+// ============================================================
+// DATA — replace this section when updating with new install data
+// ============================================================
+const repData = [
+  {rep:"Jared Dyer",installs:191},
+  {rep:"Tom Evans",installs:150},
+  {rep:"Devin Oldroyd",installs:119},
+  {rep:"Scott Boucha",installs:97},
+  {rep:"Mark Evans",installs:79},
+  {rep:"Kyle Smith",installs:62},
+  {rep:"Zeb Fullmer",installs:53},
+  {rep:"Paul Stout",installs:53},
+  {rep:"Michael Bevan",installs:49},
+  {rep:"Tianikumi Fiefia",installs:30},
+  {rep:"Jonathan Kirkham",installs:24},
+  {rep:"Hunter Shumway",installs:23},
+  {rep:"Vitaliy Bogushchenko",installs:15},
+  {rep:"Shawn Watterson",installs:11},
+  {rep:"Sidney Kirschbaum",installs:10},
+  {rep:"Darren Bitzer",installs:10},
+  {rep:"Joel Smith",installs:9},
+  {rep:"David Petty",installs:7},
+  {rep:"Samuel Evans",installs:5},
+  {rep:"Erik Larsen",installs:5},
+  {rep:"Tanner Chappell",installs:4},
+  {rep:"Tim Burgess",installs:4},
+  {rep:"Jordan Schraedel",installs:3},
+  {rep:"Isaac Schraedel",installs:1}
+];
+
+const monthlyByRep = {
+  "Darren Bitzer":{"2026-01":1,"2026-03":3,"2026-04":1,"2026-05":4,"2026-06":1},
+  "David Petty":{"2026-06":7},
+  "Devin Oldroyd":{"2026-03":1,"2026-04":19,"2026-05":57,"2026-06":42},
+  "Erik Larsen":{"2026-01":5},
+  "Hunter Shumway":{"2026-03":1,"2026-04":2,"2026-06":20},
+  "Isaac Schraedel":{"2026-06":1},
+  "Jared Dyer":{"2026-02":13,"2026-03":26,"2026-04":40,"2026-05":35,"2026-06":77},
+  "Joel Smith":{"2026-06":9},
+  "Jonathan Kirkham":{"2026-01":3,"2026-03":1,"2026-04":12,"2026-05":5,"2026-06":3},
+  "Jordan Schraedel":{"2026-05":3},
+  "Kyle Smith":{"2026-01":12,"2026-02":8,"2026-03":16,"2026-04":14,"2026-05":9,"2026-06":3},
+  "Mark Evans":{"2026-01":1,"2026-02":27,"2026-03":14,"2026-04":2,"2026-05":12,"2026-06":23},
+  "Michael Bevan":{"2026-01":4,"2026-02":1,"2026-03":10,"2026-04":1,"2026-05":23,"2026-06":10},
+  "Paul Stout":{"2026-01":13,"2026-02":6,"2026-03":7,"2026-04":21,"2026-05":4,"2026-06":2},
+  "Samuel Evans":{"2026-01":1,"2026-02":4},
+  "Scott Boucha":{"2026-04":7,"2026-05":60,"2026-06":30},
+  "Shawn Watterson":{"2026-02":1,"2026-03":5,"2026-04":5},
+  "Sidney Kirschbaum":{"2026-01":4,"2026-02":1,"2026-03":2,"2026-05":2,"2026-06":1},
+  "Tanner Chappell":{"2026-01":3,"2026-03":1},
+  "Tianikumi Fiefia":{"2026-03":1,"2026-04":22,"2026-05":7},
+  "Tim Burgess":{"2026-01":4},
+  "Tom Evans":{"2026-01":13,"2026-02":37,"2026-03":31,"2026-04":29,"2026-05":27,"2026-06":13},
+  "Vitaliy Bogushchenko":{"2026-01":9,"2026-02":6},
+  "Zeb Fullmer":{"2026-01":39,"2026-02":7,"2026-03":5,"2026-05":1,"2026-06":1}
+};
+
+const partnerByRep = {
+  "Darren Bitzer":{"Gateway":10},
+  "David Petty":{"C Spire":1,"MaxxSouth":6},
+  "Devin Oldroyd":{"All West":78,"Buckeye":37,"MaxxSouth":4},
+  "Erik Larsen":{"Lyte Fiber":5},
+  "Hunter Shumway":{"C Spire":11,"Gateway":1,"Lyte Fiber":3,"MaxxSouth":8},
+  "Isaac Schraedel":{"All West":1},
+  "Jared Dyer":{"All West":117,"Breezeline":3,"Buckeye":19,"Clearnetworx":16,"Kinetic":5,"Lyte Fiber":6,"Zochnet":25},
+  "Joel Smith":{"Buckeye":9},
+  "Jonathan Kirkham":{"Gateway":24},
+  "Jordan Schraedel":{"All West":3},
+  "Kyle Smith":{"All West":50,"Gateway":6,"Point Broadband":6},
+  "Mark Evans":{"All West":67,"Zochnet":12},
+  "Michael Bevan":{"All West":5,"Buckeye":33,"Lyte Fiber":11},
+  "Paul Stout":{"All West":36,"Astound":3,"Gateway":3,"Lyte Fiber":11},
+  "Samuel Evans":{"All West":5},
+  "Scott Boucha":{"Breezeline":1,"Buckeye":96},
+  "Shawn Watterson":{"Astound":1,"Lyte Fiber":10},
+  "Sidney Kirschbaum":{"Brightspeed":10},
+  "Tanner Chappell":{"All West":4},
+  "Tianikumi Fiefia":{"Buckeye":4,"MaxxSouth":26},
+  "Tim Burgess":{"Wi Fiber":4},
+  "Tom Evans":{"All West":147,"Lyte Fiber":3},
+  "Vitaliy Bogushchenko":{"All West":15},
+  "Zeb Fullmer":{"BAM":8,"Sparklight":45}
+};
+// ============================================================
+
+const months = ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06'];
+const monthLabels = ['Jan','Feb','Mar','Apr','May','Jun'];
+
+// === KPIs ===
+const totalInstalls = repData.reduce((s,r) => s + r.installs, 0);
+const totalReps = repData.length;
+const avgPerRep = Math.round(totalInstalls / totalReps);
+
+const monthlyTotals = months.map(m => {
+  let sum = 0;
+  for (const rep in monthlyByRep) {
+    sum += (monthlyByRep[rep][m] || 0);
+  }
+  return sum;
+});
+const bestMonth = monthLabels[monthlyTotals.indexOf(Math.max(...monthlyTotals))];
+
+document.getElementById('kpis').innerHTML =
+  '<div class="kpi-card"><div class="value">'+totalInstalls.toLocaleString()+'</div><div class="label">Total Installs</div></div>'+
+  '<div class="kpi-card"><div class="value">'+totalReps+'</div><div class="label">Active Reps</div></div>'+
+  '<div class="kpi-card"><div class="value">'+avgPerRep+'</div><div class="label">Avg / Rep</div></div>'+
+  '<div class="kpi-card"><div class="value">'+bestMonth+'</div><div class="label">Best Month</div></div>';
+
+// === BAR CHART ===
+var barColors = repData.map(function(_, i) {
+  var ratio = i / (repData.length - 1 || 1);
+  var r = Math.round(67 + ratio * 100);
+  var g = Math.round(97 + ratio * 80);
+  var b = Math.round(238 - ratio * 80);
+  return 'rgb('+r+','+g+','+b+')';
+});
+
+new Chart(document.getElementById('repChart'), {
+  type: 'bar',
+  data: {
+    labels: repData.map(function(r) { return r.rep; }),
+    datasets: [{
+      data: repData.map(function(r) { return r.installs; }),
+      backgroundColor: barColors,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) { return ctx.raw + ' installs'; }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 11 } } },
+      y: { grid: { display: false }, ticks: { font: { size: 12, weight: '500' } } }
+    }
+  }
+});
+
+// === MONTHLY LINE CHART ===
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'line',
+  data: {
+    labels: monthLabels,
+    datasets: [{
+      label: 'Total Installs',
+      data: monthlyTotals,
+      borderColor: '#4361ee',
+      backgroundColor: 'rgba(67,97,238,0.1)',
+      fill: true,
+      tension: 0.3,
+      pointRadius: 6,
+      pointBackgroundColor: '#4361ee'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) { return ctx.raw + ' installs'; }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 13 } } },
+      y: { grid: { color: '#f0f0f0' }, beginAtZero: true, ticks: { font: { size: 12 } } }
+    }
+  }
+});
+
+// === TABLE VIEWS ===
+var maxInstalls = repData[0].installs;
+
+function renderOverview() {
+  var rows = repData.map(function(r, i) {
+    return '<tr><td class="rank">'+(i+1)+'</td><td class="rep-name">'+r.rep+'</td><td class="installs-val">'+r.installs+'</td><td class="bar-cell"><div class="bar-bg" style="width:'+(r.installs/maxInstalls*100).toFixed(1)+'%"></div></td></tr>';
+  }).join('');
+  document.getElementById('tableContainer').innerHTML = '<table><thead><tr><th>#</th><th>Rep</th><th>Installs</th><th></th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+function renderMonthly() {
+  var header = '<th>#</th><th>Rep</th>'+monthLabels.map(function(m){return '<th>'+m+'</th>';}).join('')+'<th>Total</th>';
+  var rows = repData.map(function(r, i) {
+    var cells = months.map(function(m) {
+      var v = (monthlyByRep[r.rep] && monthlyByRep[r.rep][m]) || 0;
+      return '<td style="color:'+(v===0?'#ccc':'#1a1a2e')+'">'+(v || '—')+'</td>';
+    }).join('');
+    return '<tr><td class="rank">'+(i+1)+'</td><td class="rep-name">'+r.rep+'</td>'+cells+'<td class="installs-val">'+r.installs+'</td></tr>';
+  }).join('');
+  document.getElementById('tableContainer').innerHTML = '<table><thead><tr>'+header+'</tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+function renderPartners() {
+  var rows = repData.map(function(r, i) {
+    var partners = partnerByRep[r.rep] || {};
+    var tags = Object.entries(partners)
+      .sort(function(a,b){ return b[1]-a[1]; })
+      .map(function(e){ return '<span class="partner-tag">'+e[0]+' ('+e[1]+')</span>'; })
+      .join('');
+    return '<tr><td class="rank">'+(i+1)+'</td><td class="rep-name">'+r.rep+'</td><td class="installs-val">'+r.installs+'</td><td><div class="partner-tags">'+tags+'</div></td></tr>';
+  }).join('');
+  document.getElementById('tableContainer').innerHTML = '<table><thead><tr><th>#</th><th>Rep</th><th>Total</th><th>ISP Partners</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var view = btn.getAttribute('data-view');
+    if (view === 'overview') renderOverview();
+    else if (view === 'monthly') renderMonthly();
+    else if (view === 'partners') renderPartners();
+  });
+});
+
+renderOverview();
+</script>
+</body>
+</html>
