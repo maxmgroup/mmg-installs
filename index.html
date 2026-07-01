@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MMG In-House Rep Installs — YTD 2026</title>
+<title>MMG Installs — YTD 2026</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
 :root { color-scheme: light; }
@@ -99,9 +99,9 @@ body {
 }
 .tab-btn:hover { background: #f8f9fa; }
 .tab-btn.active {
-  background: #1a1a2e;
+  background: #9B72CF;
   color: #fff;
-  border-color: #1a1a2e;
+  border-color: #9B72CF;
 }
 table {
   width: 100%;
@@ -130,7 +130,7 @@ tr:hover td { background: #f8f9fa; }
 .bar-bg {
   height: 22px;
   border-radius: 5px;
-  background: linear-gradient(90deg, #4361ee, #3a86ff);
+  background: linear-gradient(90deg, #9B72CF, #c4a0e8);
   transition: width 0.6s ease;
 }
 .partner-tags {
@@ -166,7 +166,8 @@ tr:hover td { background: #f8f9fa; }
 <body>
 
 <div class="header">
-  <h1>MMG In-House Rep Installs</h1>
+  <img src="logo.png" alt="MMG" style="height:60px; margin-bottom:10px;">
+  <h1>MMG Installs</h1>
   <div class="subtitle">Year-to-Date 2026 (Jan – Jun)</div>
 </div>
 
@@ -196,7 +197,7 @@ tr:hover td { background: #f8f9fa; }
   <div id="tableContainer"></div>
 </div>
 
-<div class="footer">MMG Group &middot; Data as of July 1, 2026</div>
+<div class="footer">MMG &middot; maxmgroup.com &middot; Data as of July 1, 2026</div>
 
 <script>
 // ============================================================
@@ -310,9 +311,9 @@ document.getElementById('kpis').innerHTML =
 // === BAR CHART ===
 var barColors = repData.map(function(_, i) {
   var ratio = i / (repData.length - 1 || 1);
-  var r = Math.round(67 + ratio * 100);
-  var g = Math.round(97 + ratio * 80);
-  var b = Math.round(238 - ratio * 80);
+  var r = Math.round(155 - ratio * 60);
+  var g = Math.round(114 - ratio * 40);
+  var b = Math.round(207 - ratio * 60);
   return 'rgb('+r+','+g+','+b+')';
 });
 
@@ -354,12 +355,12 @@ new Chart(document.getElementById('monthlyChart'), {
     datasets: [{
       label: 'Total Installs',
       data: monthlyTotals,
-      borderColor: '#4361ee',
-      backgroundColor: 'rgba(67,97,238,0.1)',
+      borderColor: '#9B72CF',
+      backgroundColor: 'rgba(155,114,207,0.15)',
       fill: true,
       tension: 0.3,
       pointRadius: 6,
-      pointBackgroundColor: '#4361ee'
+      pointBackgroundColor: '#9B72CF'
     }]
   },
   options: {
