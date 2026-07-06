@@ -44,22 +44,18 @@
   </div>
 </div>
 <p class="subtitle">Month-to-date: <strong id="monthLabel"></strong> &nbsp;|&nbsp;
-   Data updated: <strong>2026-07-06</strong> &nbsp;|&nbsp;
-   3,401 total records in store</p>
+   Data updated: <strong>2026-07-06</strong></p>
 
 <div class="cards">
   <div class="card">
-    <div class="card-val" id="totalPlaced">325</div>
+    <div class="card-val" id="totalPlaced">300</div>
     <div class="card-lbl">Orders Placed MTD</div>
   </div>
   <div class="card">
-    <div class="card-val" id="totalInstalled">197</div>
+    <div class="card-val" id="totalInstalled">195</div>
     <div class="card-lbl">Installs Confirmed MTD</div>
   </div>
-  <div class="card">
-    <div class="card-val">21</div>
-    <div class="card-lbl">Active Reps This Month</div>
-  </div>
+  
   <div class="card">
     <div class="card-val">6</div>
     <div class="card-lbl">ISPs Tracked</div>
@@ -78,16 +74,10 @@
   </div>
 </div>
 
-<!-- Weekly trend + ISP breakdown -->
-<div class="grid2-3">
-  <div class="panel">
-    <h2>Weekly Order Trend (last 8 weeks)</h2>
-    <div class="chart-wrap"><canvas id="weeklyChart"></canvas></div>
-  </div>
-  <div class="panel">
-    <h2>ISP Breakdown — MTD</h2>
-    <div class="chart-wrap"><canvas id="ispChart"></canvas></div>
-  </div>
+<!-- ISP breakdown -->
+<div class="panel" style="margin-bottom:16px">
+  <h2>ISP Breakdown — MTD</h2>
+  <div class="chart-wrap"><canvas id="ispChart"></canvas></div>
 </div>
 
 <!-- Rep detail table -->
@@ -109,9 +99,7 @@ const STATS = {
     "David Petty",
     "Jared Dyer",
     "Michael Bevan",
-    "Paul Stout",
     "Isaac Crow",
-    "Isaac Schraedel",
     "Hunter Shunmway",
     "Jonathan Kirkham",
     "Samuel Tate",
@@ -120,7 +108,8 @@ const STATS = {
     "Kyle Smith",
     "Cade Nuckles",
     "Cameron Perez",
-    "Joel Smith"
+    "Joel Smith",
+    "Kai Kabba"
   ],
   "placed_by_rep": [
     60,
@@ -132,14 +121,13 @@ const STATS = {
     25,
     15,
     14,
-    14,
-    11,
     9,
     7,
     4,
     3,
     2,
     2,
+    1,
     1,
     1,
     1
@@ -153,9 +141,7 @@ const STATS = {
     11,
     26,
     14,
-    2,
     7,
-    0,
     5,
     4,
     4,
@@ -164,7 +150,8 @@ const STATS = {
     0,
     4,
     3,
-    10
+    10,
+    1
   ],
   "isp_labels": [
     "All West",
@@ -175,7 +162,7 @@ const STATS = {
     "Gateway"
   ],
   "isp_placed": [
-    179,
+    154,
     0,
     15,
     72,
@@ -183,7 +170,7 @@ const STATS = {
     11
   ],
   "isp_installed": [
-    66,
+    64,
     0,
     15,
     90,
@@ -212,8 +199,8 @@ const STATS = {
     0,
     0,
     0,
-    175,
-    118,
+    151,
+    117,
     18,
     13,
     1
@@ -224,13 +211,13 @@ const STATS = {
     0,
     39,
     76,
-    57,
+    55,
     24,
     1
   ],
-  "total_placed": 325,
-  "total_installed": 197,
-  "unique_reps": 21,
+  "total_placed": 300,
+  "total_installed": 195,
+  "unique_reps": 19,
   "total_records": 3401,
   "by_rep_isp": {
     "Jared Dyer": {
@@ -269,18 +256,6 @@ const STATS = {
       "All West": {
         "placed": 4,
         "installed": 4
-      }
-    },
-    "Isaac Schraedel": {
-      "All West": {
-        "placed": 11,
-        "installed": 0
-      }
-    },
-    "Paul Stout": {
-      "All West": {
-        "placed": 14,
-        "installed": 2
       }
     },
     "Lewis Miller": {
@@ -386,8 +361,8 @@ const STATS = {
   },
   "by_rep_group": {
     "MMG": {
-      "installed": 197,
-      "placed": 325
+      "installed": 195,
+      "placed": 300
     }
   }
 };
@@ -419,19 +394,6 @@ new Chart(document.getElementById("repInstalledChart"), {
   options: barOpts("#D5AF34")
 });
 
-new Chart(document.getElementById("weeklyChart"), {
-  type: "line",
-  data: { labels: STATS.week_labels, datasets: [
-    { label: "Placed",    data: STATS.weekly_placed,
-       borderColor: "#9163CD", backgroundColor: "rgba(145,99,205,.12)",
-       fill: true, tension: 0.35, pointRadius: 4 },
-    { label: "Installed", data: STATS.weekly_installed,
-       borderColor: "#D5AF34", backgroundColor: "rgba(213,175,52,.12)",
-       fill: true, tension: 0.35, pointRadius: 4 },
-  ]},
-  options: { responsive: true, maintainAspectRatio: false,
-    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
-});
 
 new Chart(document.getElementById("ispChart"), {
   type: "doughnut",
